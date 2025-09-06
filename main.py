@@ -60,10 +60,17 @@ gradient_text_html = """
 
 st.markdown(gradient_text_html, unsafe_allow_html=True)
 
-st.caption("Talk your way through data")
+caption_text = \
+"""
+NVIDIA 2025 Hackathon 参赛项目<br>
+这里可以用自然语言跟数据库交互，可以生成各种图形报告，可以看到 MCP 调用日志
+"""
+
+st.caption(caption_text, unsafe_allow_html=True)
 
 model_options = {
-    "qwen-plus": "qwen-plus"
+    "qwen-plus": "qwen-plus",
+    "qwen-turbo": "qwen-turbo"
 }
 
 model = st.radio(
@@ -101,7 +108,7 @@ INITIAL_MESSAGE = [
     {"role": "user", "content": "Hi!"},
     {
         "role": "assistant",
-        "content": "我是 ChatBI 智能助手，专为 Nvidia Agent Hackathoon 开发，可以生成跟数据库交互，生成各种图形报告，来聊聊吧 🔍",
+        "content": "我是 ChatBI 智能助手，已接入SQLite，块来聊聊吧 🔍",
     },
 ]
 config = {"configurable": {"thread_id": "42"}}

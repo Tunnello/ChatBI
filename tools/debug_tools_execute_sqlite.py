@@ -1,4 +1,5 @@
 from tools_execute_sqlite import execute_sqlite_query
+import streamlit as st
 
 # 调试用：检查 products 表是否存在，并尝试查询部分数据
 
@@ -22,7 +23,7 @@ def debug_function_calling():
     load_dotenv()
     
     tools = [execute_sqlite_query]
-    llm = init_chat_model(model="qwen-plus", model_provider="openai", base_url="https://dashscope.aliyuncs.com/compatible-mode/v1")
+    llm = init_chat_model(model = st.session_state.get("model", "qwen-plus"), model_provider="openai", base_url="https://dashscope.aliyuncs.com/compatible-mode/v1")
     # 将我们定义的LangChain工具转换为OpenAI函数描述格式
     functions_for_model = [convert_to_openai_function(t) for t in tools]
 
@@ -55,7 +56,7 @@ def debug_agent_function_calling():
 
     
     tools = [execute_sqlite_query]
-    llm = init_chat_model(model="qwen-plus", model_provider="openai", base_url="https://dashscope.aliyuncs.com/compatible-mode/v1")
+    llm = init_chat_model(model = st.session_state.get("model", "qwen-plus"), model_provider="openai", base_url="https://dashscope.aliyuncs.com/compatible-mode/v1")
 
     # 创建Agent
     # 这个agent知道如何使用OpenAI的函数调用特性来决定调用哪个工具

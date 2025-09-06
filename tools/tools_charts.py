@@ -2,6 +2,7 @@ from typing import List, Dict, Any
 from langchain.tools import tool
 from langchain_core.language_models import BaseLanguageModel
 from langchain.chat_models import init_chat_model
+import streamlit as st
 from dotenv import load_dotenv
 import json
 # import streamlit_highcharts as hct
@@ -9,7 +10,7 @@ import json
 load_dotenv()
 
 # 初始化语言模型
-llm = init_chat_model(model="qwen-plus", model_provider="openai", base_url="https://dashscope.aliyuncs.com/compatible-mode/v1")
+llm = init_chat_model(model = st.session_state.get("model", "qwen-plus"), model_provider="openai", base_url="https://dashscope.aliyuncs.com/compatible-mode/v1")
 
 
 @tool(
