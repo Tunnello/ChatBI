@@ -55,7 +55,12 @@ st.markdown(gradient_text_html, unsafe_allow_html=True)
 
 caption_text = \
 """
-NVIDIA 2025 Hackathon 参赛项目<br>
+NVIDIA 2025 Hackathon 参赛项目 - <b style="color:blue;">来自 Hello Agent 团队</b><br>
+这里可以用自然语言跟数据库交互，可以生成各种图形报告，可以看到 MCP 调用日志
+"""
+caption_text = \
+"""
+NVIDIA 2025 Hackathon 参赛项目 - <b>来自 Hello Agent 团队</b><br>
 这里可以用自然语言跟数据库交互，可以生成各种图形报告，可以看到 MCP 调用日志
 """
 

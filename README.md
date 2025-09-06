@@ -21,7 +21,7 @@ ChatBI 是一个基于 Streamlit 的智能数据对话 Agent，支持自然语�
 - **多模型支持**：集成主流大模型（如 Qwen 等）。
 
 
-## 主要功能
+## 主要技术
 
 - **Agent 框架**：LangChain / LangGraph
 - **AI 模型**：阿里百炼 Qwen 系列
