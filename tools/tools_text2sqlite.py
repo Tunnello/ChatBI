@@ -48,4 +48,4 @@ def text2sqlite_tool(text: str, table_schema: str = "") -> Dict[str, Any]:
     response = llm.invoke(prompt)
 
     # 只返回SQL语句
-    return {"sqlite_query": response}
+    return {"sqlite_query": response.content}

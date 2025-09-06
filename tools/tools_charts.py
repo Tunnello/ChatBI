@@ -4,7 +4,7 @@ from langchain_core.language_models import BaseLanguageModel
 from langchain.chat_models import init_chat_model
 from dotenv import load_dotenv
 import json
-import streamlit_highcharts as hct
+# import streamlit_highcharts as hct
 
 load_dotenv()
 
@@ -83,10 +83,10 @@ def highcharts_tool(numbers: List[float], chart_type: str = "line") -> Dict[str,
 
     # 解析 JSON
     try:
-        config = json.loads(response)
-        hct.streamlit_highcharts(config, 640)
+        config = json.loads(response.content)
+        # hct.streamlit_highcharts(config, 640)
     except Exception:
-        config = {"error": "Failed to parse LLM output", "raw": response}
+        config = {"error": "Failed to parse LLM output", "raw": response.content}
 
     
     return config

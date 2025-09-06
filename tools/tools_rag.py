@@ -31,6 +31,6 @@ vector_store = Chroma(
 
 retriever_tool = create_retriever_tool(
     vector_store.as_retriever(),
-    name="Database_Schema",
+    name="database_schema_rag",
     description="Search for database schema details",
 )
