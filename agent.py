@@ -12,9 +12,12 @@ from langgraph.graph.message import add_messages
 from langchain_core.messages import BaseMessage
 
 from tools.tools_rag import retriever_tool, search
-from tools.tools_text2sqlite import text2sqlite_tool, get_time_by_timezone
+from tools.tools_text2sqlite import text2sqlite_tool#, get_time_by_timezone
 from tools.tools_execute_sqlite import execute_sqlite_query
 from tools.tools_charts import highcharts_tool
+
+from langchain_mcp_adapters.client import MultiServerMCPClient
+import asyncio
 
 from PIL import Image
 from io import BytesIO
@@ -27,8 +30,39 @@ class MessagesState:
     messages: Annotated[Sequence[BaseMessage], add_messages]
 
 memory = MemorySaver()
-tools = [retriever_tool, search, get_time_by_timezone, text2sqlite_tool, highcharts_tool, execute_sqlite_query]
 
+# Set up MCP client
+client = MultiServerMCPClient(
+    {
+        "time": {
+            "command": "python",
+            # Make sure to update to the full absolute path to your file
+            "args": ["./tools/mcp_time.py"],
+            "transport": "stdio",
+        },
+        # "time": {
+        #     # make sure you start your weather server on port 1234
+        #     "url": "https://:1234/mcp/",
+        #     "transport": "streamable_http",
+        # },
+        # "weather": {
+        #     # make sure you start your weather server on port 8000
+        #     "url": "https://:8000/mcp/",
+        #     "transport": "streamable_http",
+        # }
+    }
+)
+# 异步方式
+async def get_mcp_tools():
+    mcp_tools = await client.get_tools()
+    return mcp_tools
+
+
+mcp_tools = asyncio.run(client.get_tools())
+# st.write(f"mcp_tools: {mcp_tools}")
+
+tools = [retriever_tool, search, text2sqlite_tool, highcharts_tool, execute_sqlite_query]
+tools = tools + mcp_tools
 @dataclass
 class ModelConfig:
     model_name: str
