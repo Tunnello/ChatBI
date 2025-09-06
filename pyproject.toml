@@ -1,0 +1,27 @@
+[project]
+name = "ChatBI"
+version = "0.1.0"
+description = "This project is for Nvidia Agent Hackathon."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "chromadb>=1.0.20",
+    "duckduckgo-search==6.3.0",
+    "faker>=37.6.0",
+    "ipykernel>=6.30.1",
+    "langchain==0.3.3",
+    "langchain-community==0.3.2",
+    "langchain-openai==0.3.3",
+    "langgraph==0.2.38",
+    "pandas>=2.3.2",
+    "pydantic==2.9.2",
+    "python-magic>=0.4.27",
+    "requests==2.32.3",
+    "streamlit==1.33.0",
+    "streamlit-highcharts==0.1.5",
+    "tiktoken>=0.11.0",
+    "tqdm>=4.67.1"
+]
+
+[tool.uv]
+index-url = "https://pypi.tuna.tsinghua.edu.cn/simple/"
