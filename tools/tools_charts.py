@@ -32,7 +32,7 @@ def highcharts_tool(numbers: List[float], chart_type: str = "line") -> Dict[str,
             numbers: 数字列表
             chart_type: 图表类型
         """
-        example_json = '''{
+        example_json = '''json\n{
    "title":{
       "text":"Sales of petroleum products March, Norway",
       "align":"left"
@@ -89,5 +89,4 @@ def highcharts_tool(numbers: List[float], chart_type: str = "line") -> Dict[str,
     except Exception:
         config = {"error": "Failed to parse LLM output", "raw": response.content}
 
-    
-    return config
+    return response

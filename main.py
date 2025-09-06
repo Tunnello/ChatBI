@@ -63,7 +63,8 @@ st.caption(caption_text, unsafe_allow_html=True)
 
 model_options = {
     "qwen-plus": "qwen-plus",
-    "qwen-turbo": "qwen-turbo"
+    "qwen-turbo": "qwen-turbo",
+    "qwen3-30b-a3b-thinking-2507": "qwen3-30b-a3b-thinking-2507"
 }
 
 model = st.radio(
@@ -116,11 +117,11 @@ with open("ui/styles.md", "r") as styles_file:
 # 从session_state获取数据
 chat_data = st.session_state
 with st.sidebar:
+    st.header("MCP 调用日志", divider="rainbow")
     def display_tool():
-        st.header("MCP 调用日志", divider="rainbow")
         if "tool_events" in st.session_state:
             if st.session_state["tool_events"] == []:
-                pass
+                st.info("暂无调用日志，开始你的提问吧 🚀")
             else:
                 for i, msg in enumerate(st.session_state["tool_events"], 1):
                     with st.expander(f"MCP #{i}: {msg.name}"):
@@ -134,6 +135,8 @@ with st.sidebar:
                             st.json(parsed_json)
                         except json.JSONDecodeError as e:
                             st.write(f"{msg.content}")
+        else:
+            st.info("暂无调用日志，开始你的提问吧 🚀")
 
     display_tool()
 
@@ -288,9 +291,11 @@ if (
             append_message(assistant_message)
             st.session_state["assistant_response_processed"] = True
             st.session_state["tool_events"] = [msg for msg in result['messages'] if isinstance(msg, ToolMessage)] # 这样写每一次提问会清空，要累积的话就需要append
+            # with st.sidebar:
+            #     display_tool()
 
         import time
-        time.sleep(2)  # slight delay to ensure UI is ready
+        time.sleep(1)  # slight delay to ensure UI is ready
         st.rerun()
     
 

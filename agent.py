@@ -43,6 +43,10 @@ model_configurations = {
     "qwen-turbo": ModelConfig(
         model_name="qwen-turbo", api_key=st.secrets["OPENAI_API_KEY"],
         base_url=st.secrets["OPENAI_API_BASE_URL"] if "OPENAI_API_BASE_URL" in st.secrets else None
+    ),
+    "qwen3-30b-a3b-thinking-2507": ModelConfig(
+        model_name="qwen3-30b-a3b-thinking-2507", api_key=st.secrets["OPENAI_API_KEY"],
+        base_url=st.secrets["OPENAI_API_BASE_URL"] if "OPENAI_API_BASE_URL" in st.secrets else None
     )
     }
 
