@@ -2,7 +2,7 @@ import re
 import warnings
 
 import streamlit as st
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import HumanMessage, AIMessage, ToolMessage
 from agent import MessagesState, create_agent
 
 # from utils.snow_connect import SnowflakeConnection
@@ -14,26 +14,49 @@ warnings.filterwarnings("ignore", category=SyntaxWarning, message="invalid escap
 warnings.filterwarnings("ignore")
 chat_history = []
 
+import streamlit as st
+import base64
+
+# 读取本地图片并转为 Base64
+def get_local_image_base64(image_path):
+    with open(image_path, "rb") as f:
+        return base64.b64encode(f.read()).decode()
+
+# 本地图片路径（如 assets/logo.png）
+# image_base64 = get_local_image_base64("assets/nvidia.svg")
+
 
 gradient_text_html = """
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700;900&display=swap');
 
+.nvidia-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 900;
+    font-size: 3.5em;
+    color: #76B900;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    margin: 0;
+    padding: 10px 0 0 0;
+    text-align: center;
+}
 .sqlitechat-title {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 900;
-  font-size: 4em;
-  background: linear-gradient(90deg, #ff6a00, #ee0979);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-  margin: 0;
-  padding: 20px 0;
-  text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 900;
+    font-size: 3em;
+    background: linear-gradient(90deg, #ff6a00, #ee0979);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    margin: 0;
+    padding: 20px 0 0 0;
+    text-align: center;
 }
 </style>
-<div class="sqlitechat-title">sqlitechat</div>
+<div class="nvidia-title">NVIDIA 2025 Hackathon</div>
+<div class="sqlitechat-title">ChatDB-SQLite</div>
 """
+
 
 st.markdown(gradient_text_html, unsafe_allow_html=True)
 
@@ -44,7 +67,7 @@ model_options = {
 }
 
 model = st.radio(
-    "Choose your AI Model:",
+    "选择 AI 模型",
     options=list(model_options.keys()),
     format_func=lambda x: model_options[x],
     index=0,
@@ -89,10 +112,64 @@ with open("ui/sidebar.md", "r") as sidebar_file:
 with open("ui/styles.md", "r") as styles_file:
     styles_content = styles_file.read()
 
+
+# 从session_state获取数据
+chat_data = st.session_state
+
+
+# # 在侧边栏展示助手消息
+# with st.sidebar:
+#     st.header("Agent 流式输出")
+    
+#     if chat_data is None or "messages" not in chat_data or not chat_data["messages"]:
+#         st.info("暂无 Agent 输出，开始你的提问吧！")
+#         # st.stop()
+#     else:
+#         # 筛选并展示所有助手消息
+#         assistant_messages = [msg for msg in chat_data["messages"] if msg["role"] == "assistant"]
+        
+#         if assistant_messages:
+#             for i, msg in enumerate(assistant_messages):
+#                 if i == 0:
+#                     pass
+#                 else:
+#                     with st.expander(f"{i}", expanded=True):
+#                         # 支持Markdown格式显示（如代码块）
+#                         st.markdown(msg["content"])
+import json
 with st.sidebar:
-    if st.button("渲染"):
-        st.rerun()
-st.sidebar.markdown(sidebar_content)
+    def display_tool():
+        st.header("MCP 调用日志", divider="rainbow")
+        if "tool_events" in st.session_state:
+            if st.session_state["tool_events"] == []:
+                pass
+            else:
+                for i, msg in enumerate(st.session_state["tool_events"], 1):
+                    with st.expander(f"MCP #{i}: {msg.name}"):
+                        # st.code(msg.content, language="text")
+                        st.subheader(f"call_id")
+                        st.write(f"{msg.tool_call_id}")
+                        st.subheader(f"return")
+                        try:
+                            # 尝试解析JSON
+                            parsed_json = json.loads(msg.content)
+                            st.json(parsed_json)
+                        except json.JSONDecodeError as e:
+                            st.write(f"{msg.content}")
+
+    display_tool()
+
+    # col1, col2= st.columns([5,1])
+    # with col2:
+    #     if st.button("clear"):
+    #         st.session_state["tool_events"] = []
+    #         st.rerun()
+    # with col1:
+    #     display_tool()
+
+    # 显示当前会话状态中的所有键值对
+    # st.write("当前会话状态:", st.session_state)
+# st.sidebar.markdown(sidebar_content)
 
 # selected_table = st.sidebar.selectbox(
 #     "Select a table:", options=list(snow_ddl.ddl_dict.keys())
@@ -125,7 +202,7 @@ if "model" not in st.session_state:
     st.session_state["model"] = model
 
 
-col1, col2 = st.columns([4, 1])  # Adjust column widths as needed
+# col1, col2 = st.columns([4, 1])  # Adjust column widths as needed
 
 # with col1:
 #     # Prompt for user input and save
@@ -164,6 +241,7 @@ for message in messages_to_display:
 callback_handler = StreamlitUICallbackHandler(model)
 
 react_graph = create_agent(callback_handler, st.session_state["model"])
+
 
 
 def append_chat_history(question, answer):
@@ -224,11 +302,19 @@ if (
 
         state = MessagesState(messages=messages)
         result = react_graph.invoke(state, config=config, debug=True)
+        # st.sidebar.write(f"result: {result}")
+        
 
         if result["messages"]:
             assistant_message = callback_handler.final_message
             append_message(assistant_message)
             st.session_state["assistant_response_processed"] = True
+            st.session_state["tool_events"] = [msg for msg in result['messages'] if isinstance(msg, ToolMessage)] # 这样写每一次提问会清空，要累积的话就需要append
+
+        import time
+        time.sleep(2)  # slight delay to ensure UI is ready
+        st.rerun()
+    
 
 
 if (
@@ -243,3 +329,9 @@ if (
     #     if df is not None:
     #         callback_handler.display_dataframe(df)
     #         append_message(df, "data", True)
+
+
+
+# import time
+# time.sleep(2)  # slight delay to ensure UI is ready
+# st.rerun()
