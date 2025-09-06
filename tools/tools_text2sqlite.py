@@ -50,3 +50,32 @@ def text2sqlite_tool(text: str, table_schema: str = "") -> Dict[str, Any]:
 
     # 只返回SQL语句
     return {"sqlite_query": response.content}
+
+
+import datetime
+
+@tool(
+    "get_time_by_timezone",
+    description="获取指定时区的当前时间，返回格式如 2025-09-06 15:30:00。参数 timezone 例如 'Asia/Shanghai'、'UTC'、'America/New_York'。"
+)
+def get_time_by_timezone(timezone: str = "Asia/Shanghai") -> Dict[str, Any]:
+    """
+    获取指定时区的当前时间。
+    参数:
+        timezone: 时区字符串（如 'Asia/Shanghai', 'UTC', 'America/New_York'），默认北京时间
+    返回:
+        当前时间字符串，格式如 '2025-09-06 15:30:00'
+    """
+    try:
+        import zoneinfo
+        tz = zoneinfo.ZoneInfo(timezone)
+        now = datetime.datetime.now(tz)
+        return {"current_time": now.strftime("%Y-%m-%d %H:%M:%S"), "timezone": timezone}
+    except Exception as e:
+        # 回退到北京时间
+        utc_now = datetime.datetime.utcnow()
+        beijing_now = utc_now + datetime.timedelta(hours=8)
+        return {
+            "current_time": beijing_now.strftime("%Y-%m-%d %H:%M:%S"),
+            "timezone": "Asia/Shanghai",
+            "error": str(e)}

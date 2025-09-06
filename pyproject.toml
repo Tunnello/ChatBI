@@ -11,6 +11,7 @@ dependencies = [
     "ipykernel>=6.30.1",
     "langchain==0.3.3",
     "langchain-community==0.3.2",
+    "langchain-mcp-adapters>=0.1.9",
     "langchain-openai==0.3.3",
     "langgraph==0.2.38",
     "pandas>=2.3.2",
@@ -20,7 +21,7 @@ dependencies = [
     "streamlit==1.33.0",
     "streamlit-highcharts==0.1.5",
     "tiktoken>=0.11.0",
-    "tqdm>=4.67.1"
+    "tqdm>=4.67.1",
 ]
 
 [tool.uv]

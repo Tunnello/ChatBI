@@ -1,21 +1,14 @@
-import re
-import warnings
-
+import re, base64, json, warnings
 import streamlit as st
-from langchain_core.messages import HumanMessage, AIMessage, ToolMessage
 from agent import MessagesState, create_agent
-
-# from utils.snow_connect import SnowflakeConnection
-# from utils.sqlitechat_ui import StreamlitUICallbackHandler, message_func
 from ui.sqlitechat_ui import StreamlitUICallbackHandler, message_func
+from langchain_core.messages import HumanMessage, AIMessage, ToolMessage
 
 # 忽略 "invalid escape sequence" 类型的语法警告
 warnings.filterwarnings("ignore", category=SyntaxWarning, message="invalid escape sequence.*")
 warnings.filterwarnings("ignore")
 chat_history = []
 
-import streamlit as st
-import base64
 
 # 读取本地图片并转为 Base64
 def get_local_image_base64(image_path):
@@ -108,7 +101,7 @@ INITIAL_MESSAGE = [
     {"role": "user", "content": "Hi!"},
     {
         "role": "assistant",
-        "content": "我是 ChatBI 智能助手，已接入SQLite，块来聊聊吧 🔍",
+        "content": "我是 ChatBI 智能助手，已接入 SQLite，快来聊聊吧 🔍",
     },
 ]
 config = {"configurable": {"thread_id": "42"}}
@@ -122,28 +115,6 @@ with open("ui/styles.md", "r") as styles_file:
 
 # 从session_state获取数据
 chat_data = st.session_state
-
-
-# # 在侧边栏展示助手消息
-# with st.sidebar:
-#     st.header("Agent 流式输出")
-    
-#     if chat_data is None or "messages" not in chat_data or not chat_data["messages"]:
-#         st.info("暂无 Agent 输出，开始你的提问吧！")
-#         # st.stop()
-#     else:
-#         # 筛选并展示所有助手消息
-#         assistant_messages = [msg for msg in chat_data["messages"] if msg["role"] == "assistant"]
-        
-#         if assistant_messages:
-#             for i, msg in enumerate(assistant_messages):
-#                 if i == 0:
-#                     pass
-#                 else:
-#                     with st.expander(f"{i}", expanded=True):
-#                         # 支持Markdown格式显示（如代码块）
-#                         st.markdown(msg["content"])
-import json
 with st.sidebar:
     def display_tool():
         st.header("MCP 调用日志", divider="rainbow")
