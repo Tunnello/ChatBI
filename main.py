@@ -69,7 +69,7 @@ st.caption(caption_text, unsafe_allow_html=True)
 model_options = {
     "qwen-plus": "qwen-plus",
     "qwen-turbo": "qwen-turbo",
-    "qwen3-30b-a3b-thinking-2507": "qwen3-30b-a3b-thinking-2507"
+    "qwen3-max-preview": "qwen3-max-preview"
 }
 
 model = st.radio(
@@ -122,7 +122,12 @@ with open("ui/styles.md", "r") as styles_file:
 # 从session_state获取数据
 chat_data = st.session_state
 with st.sidebar:
-    st.header("MCP 调用日志", divider="rainbow")
+    # st.header("开始提问吧")
+    with st.expander("开始提问吧"):
+        st.info("我有多少个产品类别，每个类别有多少产品，用柱状图和环形图呈现", icon="❓")
+        st.info("画出订单的面积堆积图，按时间线排列", icon="❓")
+        st.info("分析支付数据，画折线图，支付时间 作为 X 轴", icon="❓")
+    # st.header("MCP 调用日志", divider="rainbow")
     def display_tool():
         if "tool_events" in st.session_state:
             if st.session_state["tool_events"] == []:
@@ -143,15 +148,16 @@ with st.sidebar:
         else:
             st.info("暂无调用日志，开始你的提问吧 🚀")
 
-    display_tool()
+    # display_tool()
 
-    # col1, col2= st.columns([5,1])
-    # with col2:
-    #     if st.button("clear"):
-    #         st.session_state["tool_events"] = []
-    #         st.rerun()
-    # with col1:
-    #     display_tool()
+    col1, col2= st.columns([5,1])
+    with col2:
+        if st.button("清除", type="secondary"):
+            st.session_state["tool_events"] = []
+            st.rerun()
+    with col1:
+        st.header("MCP 调用日志", divider="rainbow")
+    display_tool()
 
     # 显示当前会话状态中的所有键值对
     # st.write("当前会话状态:", st.session_state)

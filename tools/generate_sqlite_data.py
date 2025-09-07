@@ -127,5 +127,5 @@ def generate_sample_data(num_customers=10, num_orders=10, num_products=10):
 
 if __name__ == "__main__":
     create_tables()
-    generate_sample_data(num_customers=10, num_orders=10, num_products=10)
+    generate_sample_data(num_customers=20, num_orders=20, num_products=20)
     print("Database and sample data created successfully!")

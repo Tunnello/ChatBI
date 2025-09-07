@@ -66,13 +66,12 @@ def highcharts_tool(numbers: List[float], chart_type: str = "line") -> Dict[str,
     ]
 }'''
         return (
-            f"你是一个前端可视化专家，请根据以下数字列表，生成一个Highcharts的{chart_type}图JSON配置文件，只返回JSON，不要有任何解释。\n"
+            f"你是一个前端可视化专家，请根据以下数字列表，生成一个Highcharts的{chart_type}图JSON配置文件，注意是纯JSON格式，而不是html格式。\n"
             f"数字列表: {numbers}\n"
-            "要求：\n"
+            f"要求：\n"
             f"1. 图表类型为{chart_type}。\n"
-            "2. x轴为序号（从1开始），y轴为数字。\n"
-            "3. JSON必须符合Highcharts格式。\n"
-            "4. 示例：\n"
+            "2. 最终结果再检查一遍，确保JSON必须符合Highcharts格式。\n"
+            "3. 示例：\n"
             f"{example_json}\n"
         )
 

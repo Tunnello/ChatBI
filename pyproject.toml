@@ -18,7 +18,7 @@ dependencies = [
     "pydantic==2.9.2",
     "python-magic>=0.4.27",
     "requests==2.32.3",
-    "streamlit==1.33.0",
+    "streamlit==1.49.0",
     "streamlit-highcharts==0.1.5",
     "tiktoken>=0.11.0",
     "tqdm>=4.67.1",

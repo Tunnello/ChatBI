@@ -44,8 +44,8 @@ model_configurations = {
         model_name="qwen-turbo", api_key=st.secrets["OPENAI_API_KEY"],
         base_url=st.secrets["OPENAI_API_BASE_URL"] if "OPENAI_API_BASE_URL" in st.secrets else None
     ),
-    "qwen3-30b-a3b-thinking-2507": ModelConfig(
-        model_name="qwen3-30b-a3b-thinking-2507", api_key=st.secrets["OPENAI_API_KEY"],
+    "qwen3-max-preview": ModelConfig(
+        model_name="qwen3-max-preview", api_key=st.secrets["OPENAI_API_KEY"],
         base_url=st.secrets["OPENAI_API_BASE_URL"] if "OPENAI_API_BASE_URL" in st.secrets else None
     )
     }
@@ -61,6 +61,7 @@ sys_msg = SystemMessage(
     - high_charts_json: This tool allows you to generate Highcharts JSON config from a list of numbers and chart type.
 
     Your final answer should contain the analysis results or visualizations based on the user's question and the data retrieved from the database.
+    Use html format to highlight the content. 
     """
 )
 
