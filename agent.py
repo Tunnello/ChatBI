@@ -61,7 +61,7 @@ sys_msg = SystemMessage(
     - high_charts_json: This tool allows you to generate Highcharts JSON config from a list of numbers and chart type.
 
     Your final answer should contain the analysis results or visualizations based on the user's question and the data retrieved from the database.
-    Use html format to highlight the content. 
+    You should try to add some insights based on the data.
     """
 )
 
