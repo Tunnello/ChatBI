@@ -12,7 +12,7 @@ from langgraph.graph.message import add_messages
 from langchain_core.messages import BaseMessage
 
 from tools.tools_rag import retriever_tool, search
-from tools.tools_text2sqlite import text2sqlite_tool
+from tools.tools_text2sqlite import text2sqlite_tool, get_time_by_timezone
 from tools.tools_execute_sqlite import execute_sqlite_query
 from tools.tools_charts import highcharts_tool
 
@@ -27,7 +27,7 @@ class MessagesState:
     messages: Annotated[Sequence[BaseMessage], add_messages]
 
 memory = MemorySaver()
-tools = [retriever_tool, search, text2sqlite_tool, highcharts_tool, execute_sqlite_query]
+tools = [retriever_tool, search, get_time_by_timezone, text2sqlite_tool, highcharts_tool, execute_sqlite_query]
 
 @dataclass
 class ModelConfig:
@@ -39,25 +39,29 @@ model_configurations = {
     "qwen-plus": ModelConfig(
         model_name="qwen-plus", api_key=st.secrets["OPENAI_API_KEY"],
         base_url=st.secrets["OPENAI_API_BASE_URL"] if "OPENAI_API_BASE_URL" in st.secrets else None
+    ),
+    "qwen-turbo": ModelConfig(
+        model_name="qwen-turbo", api_key=st.secrets["OPENAI_API_KEY"],
+        base_url=st.secrets["OPENAI_API_BASE_URL"] if "OPENAI_API_BASE_URL" in st.secrets else None
+    ),
+    "qwen3-max-preview": ModelConfig(
+        model_name="qwen3-max-preview", api_key=st.secrets["OPENAI_API_KEY"],
+        base_url=st.secrets["OPENAI_API_BASE_URL"] if "OPENAI_API_BASE_URL" in st.secrets else None
     )
     }
 
-# sys_msg = SystemMessage(
-#     content="""You're an AI assistant specializing in data analysis with Snowflake SQL. When providing responses, strive to exhibit friendliness and adopt a conversational tone, similar to how a friend or tutor would communicate. Do not ask the user for schema or database details. You have access to the following tools:
-#     ALWAYS USE THE Database_Schema TOOL TO GET THE SCHEMA OF THE TABLE BEFORE GENERATING SQL CODE.
-#     - Database_Schema: This tool allows you to search for database schema details when needed to generate the SQL code.
-#     - Internet_Search: This tool allows you to search the internet for snowflake sql related information when needed to generate the SQL code.
-#     """
-# )
 sys_msg = SystemMessage(
     content="""You're an AI assistant specializing in data analysis with Sqlite SQL.
     Before answer the question, always get available tools first, then think step by step to use the tools to get the answer.
-    Remember first get the schema of the table by using the tool "Database_Schema" if needed.
+    Remember first get the schema of the table by using the tool "database_schema_rag" if needed.
     You have access to the following tools:
-    - Database_Schema: This tool allows you to search for database schema details when needed to generate the SQL code.
+    - database_schema_rag: This tool allows you to search for database schema details when needed to generate the SQL code.
     - text2sqlite_query: This tool allows you to convert natural language text to a SQLite query.
     - execute_sqlite_query: This tool allows you to execute a SQLite query on a fixed database and return the results as JSON. Use this tool to interact with the SQLite database.
     - high_charts_json: This tool allows you to generate Highcharts JSON config from a list of numbers and chart type.
+
+    Your final answer should contain the analysis results or visualizations based on the user's question and the data retrieved from the database.
+    You should try to add some insights based on the data.
     """
 )
 

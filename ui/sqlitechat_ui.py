@@ -93,7 +93,7 @@ def message_func(text, is_user=False, is_df=False, model="gpt"):
     message_text = text.strip()
     # print(f"This is message_text: {message_text}")
 
-    if message_text:  # Check if message_text is not empty
+    if message_text:
         if is_user:
             message_text = html.escape(message_text.strip()).replace('\n', '<br>')
             container_html = f"""
@@ -106,58 +106,52 @@ def message_func(text, is_user=False, is_df=False, model="gpt"):
             """
             st.write(container_html, unsafe_allow_html=True)
         else:
-            # 正则表达式模式
-            pattern = r'(.*?)```json\n(.*?)\n```(.*)'
-            match = re.search(pattern, message_text, re.DOTALL)
-            
-            if match:
-                print("------------ Will render Highcharts JSON ------------")
-                # 提取各部分内容
-                before_text = match.group(1).strip()
-                json_str = match.group(2)
-                after_text = match.group(3).strip()
-                
-                # 封装前后内容为HTML
-                def wrap_in_html(message_text):
-                    return f"""
-                <div style="display:flex; align-items:flex-start; justify-content:flex-start; margin:0; padding:0; margin-bottom:10px;">
-                    <img src="{avatar_url}" class="{avatar_class}" alt="avatar" style="width:30px; height:30px; margin:0; margin-right:5px; margin-top:5px;" />
-                    <div style="color:black; border-radius:20px; padding:10px; margin-left:5px; max-width:75%; font-size:14px; margin:0; line-height:1.2; word-wrap:break-word;">
-                        {message_text}
+            # 支持多个 Highcharts 图表渲染
+            # 匹配所有 ```json ... ``` 代码块
+            pattern = r'```json\n(.*?)\n```'
+            matches = list(re.finditer(pattern, message_text, re.DOTALL))
+            if matches:
+                # 依次渲染每个图表，文本分段
+                last_end = 0
+                for idx, match in enumerate(matches):
+                    before_text = message_text[last_end:match.start()].strip()
+                    json_str = match.group(1)
+                    last_end = match.end()
+                    # 自动处理前置文本为安全 HTML
+                    if before_text:
+                        safe_before_text = html.escape(before_text)
+                        before_html = f"""
+                        <div style="display:flex; align-items:flex-start; justify-content:flex-start; margin:0; padding:0; margin-bottom:10px;">
+                            <img src="{avatar_url}" class="{avatar_class}" alt="avatar" style="width:30px; height:30px; margin:0; margin-right:5px; margin-top:5px;" />
+                            <div style="color:black; border-radius:20px; padding:10px; margin-left:5px; max-width:75%; font-size:14px; margin:0; line-height:1.2; word-wrap:break-word;">
+                                {safe_before_text}
+                            </div>
+                        </div>
+                        """
+                        st.write(before_html, unsafe_allow_html=True)
+                    # 渲染图表
+                    try:
+                        json_data = json.loads(json_str)
+                        if isinstance(json_data, dict):
+                            hct.streamlit_highcharts(json_data)
+                    except json.JSONDecodeError as e:
+                        error_html = f"<div style='color:red;'>JSON解析错误: {str(e)}<br>原始JSON字符串: {json_str}</div>"
+                        st.write(error_html, unsafe_allow_html=True)
+                # 自动处理最后一段文本为安全 HTML
+                after_text = message_text[last_end:].strip()
+                if after_text:
+                    safe_after_text = html.escape(after_text)
+                    after_html = f"""
+                    <div style="display:flex; align-items:flex-start; justify-content:flex-start; margin:0; padding:0; margin-bottom:10px;">
+                        <img src="{avatar_url}" class="{avatar_class}" alt="avatar" style="width:30px; height:30px; margin:0; margin-right:5px; margin-top:5px;" />
+                        <div style="color:black; border-radius:20px; padding:10px; margin-left:5px; max-width:75%; font-size:14px; margin:0; line-height:1.2; word-wrap:break-word;">
+                            {safe_after_text}
+                        </div>
                     </div>
-                </div>
-                """
-                    # return f"""
-                    # <div style="display:flex; align-items:flex-start; justify-content:flex-start; margin:0; padding:0; margin-bottom:10px;">
-                    #     <img src="{avatar_url}" class="{avatar_class}" alt="avatar" style="width:30px; height:30px; margin:0; margin-right:5px; margin-top:5px;" />
-                    #     <div style="background:{message_bg_color}; color:white; border-radius:20px; padding:10px; margin-left:5px; max-width:75%; font-size:14px; margin:0; line-height:1.2; word-wrap:break-word;">
-                    #         {message_text}
-                    #     </div>
-                    # </div>
-                    # """
-                
-                before_html = wrap_in_html(before_text)
-                after_html = wrap_in_html(after_text)
-                
-                # 解析JSON
-                try:
-                    json_data = json.loads(json_str)
-                except json.JSONDecodeError as e:
-                    json_data = f"JSON解析错误: {str(e)}\n原始JSON字符串: {json_str}"
-
-                st.write(before_html, unsafe_allow_html=True)
-                if isinstance(json_data, dict):
-                    hct.streamlit_highcharts(json_data, 640) #640 is the chart height
-                st.write(after_html, unsafe_allow_html=True)
+                    """
+                    st.write(after_html, unsafe_allow_html=True)
             else:
-                # container_html = f"""
-                # <div style="display:flex; align-items:flex-start; justify-content:flex-start; margin:0; padding:0; margin-bottom:10px;">
-                #     <img src="{avatar_url}" class="{avatar_class}" alt="avatar" style="width:30px; height:30px; margin:0; margin-right:5px; margin-top:5px;" />
-                #     <div style="background:{message_bg_color}; color:white; border-radius:20px; padding:10px; margin-left:5px; max-width:75%; font-size:14px; margin:0; line-height:1.2; word-wrap:break-word;">
-                #         {message_text}
-                #     </div>
-                # </div>
-                # """
+                # 没有图表时正常渲染文本
                 container_html = f"""
                 <div style="display:flex; align-items:flex-start; justify-content:flex-start; margin:0; padding:0; margin-bottom:10px;">
                     <img src="{avatar_url}" class="{avatar_class}" alt="avatar" style="width:30px; height:30px; margin:0; margin-right:5px; margin-top:5px;" />
@@ -167,8 +161,6 @@ def message_func(text, is_user=False, is_df=False, model="gpt"):
                 </div>
                 """
                 st.write(container_html, unsafe_allow_html=True)
-        # st.write(container_html, unsafe_allow_html=True)
-        # st.write(message_text)
 
 
 
