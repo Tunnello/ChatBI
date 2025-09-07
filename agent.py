@@ -40,6 +40,10 @@ client = MultiServerMCPClient(
             "args": ["./tools/mcp_time.py"],
             "transport": "stdio",
         },
+        "fetch": {
+            "transport": "streamable_http",
+            "url": "https://mcp.api-inference.modelscope.net/12c7b43a064846/mcp"
+    }
         # "time": {
         #     # make sure you start your weather server on port 1234
         #     "url": "https://:1234/mcp/",
