@@ -5,7 +5,7 @@ ChatBI (Chat Business Intelligence) 是一个基于 LangGraph 的智能数据对
 
 
 ## 项目预览
-### 演示视频：[ChatBI 项目演示视频 - Nvidia Hackathon 2025](https://www.bilibili.com/video/BV1nAYLzGEgy/)
+### 演示视频：[ChatBI 项目演示视频 - Nvidia Hackathon 2025](https://www.bilibili.com/video/BV1UAnVznEA5/)
 ### 界面介绍：
 分两大部分：  
 - 左边边框 “MCP 调用日志” 提供工具调用展示
