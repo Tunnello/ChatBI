@@ -1,14 +1,37 @@
 from typing import List, Dict, Any
-from langchain.tools import tool
+from langchain_core.tools import tool
 from langchain_core.language_models import BaseLanguageModel
 from langchain.chat_models import init_chat_model
-import streamlit as st
+import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# 初始化语言模型
-llm = init_chat_model(model = st.session_state.get("model", "qwen-plus"), model_provider="openai", base_url="https://dashscope.aliyuncs.com/compatible-mode/v1")
+# 延迟初始化语言模型
+llm = None
+_current_model_name = None
+
+def get_llm(model_name: str = "qwen-plus"):
+    """
+    获取或初始化语言模型
+    
+    注意：此函数不再依赖 Streamlit session_state，因为现在主要使用 FastAPI 后端。
+    模型名称应该通过 agent.py 中的 LLM 配置传递，工具内部使用默认模型。
+    """
+    global llm, _current_model_name
+    
+    # 使用传入的模型名称（不再尝试从 Streamlit 获取）
+    current_model = model_name
+    
+    # 如果模型名称改变或 llm 未初始化，重新创建
+    if llm is None or _current_model_name != current_model:
+        llm = init_chat_model(
+            model=current_model, 
+            model_provider="openai", 
+            base_url=os.getenv("OPENAI_API_BASE_URL", "https://dashscope.aliyuncs.com/compatible-mode/v1")
+        )
+        _current_model_name = current_model  # 保存当前模型名称
+    return llm
 
 @tool(
     "text2sqlite_query",
@@ -52,8 +75,9 @@ def text2sqlite_tool(text: str, table_schema: str = "") -> Dict[str, Any]:
     # 构造 prompt
     prompt = _build_prompt(text, table_schema)
 
-    # 调用 LLM
-    response = llm.invoke(prompt)
+    # 获取 LLM 并调用
+    current_llm = get_llm()
+    response = current_llm.invoke(prompt)
 
     # 只返回SQL语句
     return {"sqlite_query": response.content}

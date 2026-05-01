@@ -71,10 +71,12 @@ class DocumentProcessor:
         data = self.loader.load()
         texts = self.text_splitter.split_documents(data)
         # print(texts)
+        # 使用绝对路径，统一使用项目根目录的向量数据库
+        chromadb_path = os.path.join(upper_dir, "chroma_langchain_db")
         vector_store = Chroma(
             collection_name="example_collection",
             embedding_function=embeddings,
-            persist_directory="../chroma_langchain_db"
+            persist_directory=chromadb_path
         )
         for i in tqdm(range(0, len(texts)), desc="Document Embedding and Saving"):
             vector_store.add_documents([texts[i]])

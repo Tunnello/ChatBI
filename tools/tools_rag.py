@@ -1,11 +1,13 @@
 from langchain.tools.retriever import create_retriever_tool
-from langchain.vectorstores import Chroma
+from langchain_community.vectorstores import Chroma
 from langchain_core.embeddings import Embeddings
 import chromadb
 ef = chromadb.utils.embedding_functions.DefaultEmbeddingFunction()
 import os
 current_file_dir = os.path.dirname(os.path.abspath(__file__))
-CHROMADB_PATH = os.path.join(current_file_dir, "chroma_langchain_db")
+# 统一使用项目根目录的向量数据库路径
+upper_dir = os.path.dirname(current_file_dir)  # 项目根目录
+CHROMADB_PATH = os.path.join(upper_dir, "chroma_langchain_db")
 
 from langchain_community.tools import DuckDuckGoSearchRun
 search = DuckDuckGoSearchRun()

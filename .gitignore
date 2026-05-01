@@ -1,21 +1,63 @@
+# 环境变量和密钥
 .env
-__pycache__/
+.env.local
 secrets.toml
-.ruff_cache
 
-archived_logs/
+# Python 缓存
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
 
-build/
-snowchat.egg-info/
-
-chroma_db
-
-pplx.py
-
-test.json
-test.*
-app.py
-
-
+# 虚拟环境
 env/
 .venv/
+venv/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 日志文件
+logs/
+*.log
+archived_logs/
+
+# 构建和分发
+build/
+dist/
+*.egg-info/
+snowchat.egg-info/
+
+# 测试
+test.json
+test.*
+.pytest_cache/
+.coverage
+htmlcov/
+
+# 临时文件
+*.tmp
+*.temp
+graph.png
+graph_*.png
+
+# 数据库文件（可选，根据需要取消注释）
+# *.db
+# *.sqlite
+# *.sqlite3
+
+# 向量数据库（可选，根据需要取消注释）
+chroma_langchain_db/
+chroma_langchain_db/chroma.sqlite3
+chroma_langchain_db/401e6c37-9e6d-49e1-8395-1c7f18d00973
+
+# 其他
+pplx.py
+app.py
+.ruff_cache/

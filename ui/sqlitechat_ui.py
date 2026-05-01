@@ -2,7 +2,7 @@ import html
 import re, json
 import streamlit as st
 import streamlit_highcharts as hct
-from langchain.callbacks.base import BaseCallbackHandler
+from langchain_core.callbacks.base import BaseCallbackHandler
 
 
 user_url = "https://ts1.tc.mm.bing.net/th/id/R-C.16a2185d7d67a406288ea44d87f6a5b3?rik=cmmDTIeeMtNmxw&riu=http%3a%2f%2fpngimg.com%2fuploads%2fcat%2fcat_PNG50534.png&ehk=vpd0ZKFGuOf2fE7GsKsM7BLwQ%2fXDJqxLpESItKYR%2bqM%3d&risl=&pid=ImgRaw&r=0"

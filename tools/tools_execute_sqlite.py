@@ -1,5 +1,5 @@
 from typing import Dict, Any
-from langchain.tools import tool
+from langchain_core.tools import tool
 import sqlite3
 import json, os
 

@@ -1,0 +1,25 @@
+# ChatBI 项目依赖
+# 如果使用 pip 安装，可以使用: pip install -r requirements.txt
+
+chromadb>=1.0.20
+duckduckgo-search==6.3.0
+faker>=37.6.0
+ipykernel>=6.30.1
+langchain==0.3.3
+langchain-community==0.3.2
+langchain-mcp-adapters>=0.1.9
+langchain-openai==0.3.3
+langgraph==0.2.38
+pandas>=2.3.2
+pydantic==2.9.2
+python-magic>=0.4.27
+requests==2.32.3
+streamlit==1.49.0
+streamlit-highcharts==0.1.5
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+sse-starlette>=1.8.0
+tiktoken>=0.11.0
+tqdm>=4.67.1
+python-dotenv
+
